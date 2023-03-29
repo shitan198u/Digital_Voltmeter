@@ -1,5 +1,7 @@
-# Digital_Voltmeter
+Digital_Voltmeter
+
 Making a digital voltmeter using arduino
+
 Introduction:
 In many electronic projects, it is important to monitor the voltage of a battery to ensure that it is operating within safe limits. If the voltage drops too low, the battery may not be able to power the device properly, and if the voltage goes too high, it could damage the device or the battery itself. In this project, we will use an Arduino and an LCD display to create a battery voltage monitor that can be used to monitor the voltage of a battery in real-time.
 
