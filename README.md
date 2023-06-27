@@ -15,10 +15,6 @@ This project demonstrates how to build a digital voltmeter using an Arduino boar
 
 ![Circuit Diagram](output.jpeg)
 
-## Installation
-
-1. Connect the components as shown in the circuit diagram.
-2. Upload the provided Arduino code to your Arduino board using the Arduino IDE or any compatible IDE.
 
 ## Code Explanation
 
