@@ -1,46 +1,87 @@
 
+# Digital Voltmeter using Arduino
 
-Digital Voltmeter
------------------
+This project demonstrates how to build a digital voltmeter using an Arduino board and an LCD display. The voltmeter is capable of monitoring the voltage of a battery in real-time.
 
-### Making a digital voltmeter using Arduino
+## Hardware Required
 
-#### Introduction:
+- Arduino board
+- 16x2 LCD display
+- Resistors (for the voltage divider circuit)
+- Voltage divider circuit components (to reduce the battery voltage to a measurable level for the Arduino's analog input pins)
+- 5V reference voltage for the Arduino's analog-to-digital converter (ADC)
 
-In many electronic projects, it is important to monitor the voltage of a battery to ensure that it is operating within safe limits. If the voltage drops too low, the battery may not be able to power the device properly, and if the voltage goes too high, it could damage the device or the battery itself. In this project, we will use an Arduino and an LCD display to create a battery voltage monitor that can be used to monitor the voltage of a battery in real-time.
+## Circuit Diagram
 
-#### Hardware:
+![Circuit Diagram](output.jpeg)
 
-The hardware required for this project is relatively simple. We need the following components:
+## Installation
 
-* Arduino board
-* 16x2 LCD display
-* Resistors (for the voltage divider circuit)
-* Voltage divider circuit components (to reduce the battery voltage to a measurable level for the Arduino's analog input pins)
-* 5V reference voltage for the Arduino's analog-to-digital converter (ADC)
+1. Connect the components as shown in the circuit diagram.
+2. Upload the provided Arduino code to your Arduino board using the Arduino IDE or any compatible IDE.
 
-The voltage divider circuit consists of two resistors, R1 and R2, connected in series. The battery voltage is connected across the two resistors, and the voltage at the junction between R1 and R2 is measured by the Arduino. The formula for calculating the input voltage is:
+## Code Explanation
 
-V = (R2 / (R1 + R2)) × Vbat
+```cpp
+#include "LiquidCrystal.h"
 
-Where Vbat is the battery voltage.
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
-#### Software:
+float input_voltage = 0.0;
+float temp = 0.0;
+float r1 = 5000.0;
+float r2 = 1000.0;
 
-The software for this project is relatively simple as well. Here are the steps:
+void setup()
+{
+   Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
+   lcd.begin(16, 2);       // set up the LCD's number of columns and rows
+   lcd.print("BATTERY VOLTAGE");
+}
 
-1. Initialize the LCD display in the setup function and print a message to indicate that we are monitoring the battery voltage.
-2. In the loop function:
-    * Read the analog value from the voltage divider circuit using the `analogRead` function.
-    * Convert the analog value to voltage using the formula: V = (analog_value × 5.0) / 1024.0. This gives us the voltage at the junction between R1 and R2.
-    * Calculate the battery voltage using the formula: V = (R2 / (R1 + R2)) × Vbat.
-    * Add a conditional statement to ensure that the battery voltage is not less than 0.1V, which is the minimum voltage required for most batteries to operate.
-    * Display the battery voltage on the LCD display using the `lcd.print` function.
-    * Send the battery voltage to the serial monitor using the `Serial.print` and `Serial.println` functions.
-    * Add a delay of 200 milliseconds to prevent the display from flickering too much.
+void loop()
+{
+   // Conversion formula
+   int analog_value = analogRead(A0);
+   temp = (analog_value * 5.0) / 1024.0;
+   input_voltage = temp / (r2 / (r1 + r2));
 
-That's it! With this setup, you can create a digital voltmeter using Arduino to monitor the voltage of a battery in real-time.
+   if (input_voltage < 0.1)
+   {
+     input_voltage = 0.0;
+   }
 
-Conclusion:
+   Serial.print("Voltage: ");
+   Serial.println(input_voltage);
+   lcd.setCursor(0, 1);
+   lcd.print("Voltage=");
+   lcd.print(input_voltage);
+   lcd.print("V");
+   delay(100);
+}
+```
 
-In conclusion, the battery voltage monitor is a simple and useful project that can be used to monitor the voltage of a battery in real-time. By using an Arduino and an LCD display, we can easily monitor the battery voltage and ensure that it is operating within safe limits. The project is easy to implement, and the code is straightforward. The battery voltage monitor can be used in various applications that rely on battery power, such as robots, drones, and portable electronic devices.
+1. The code begins by including the `LiquidCrystal` library, which provides an interface to control the LCD display.
+2. The `LiquidCrystal` object is initialized with the corresponding pin numbers for the LCD display.
+3. In the `setup()` function, the serial port is opened and set to a data rate of 9600 bps. The LCD display is also initialized with the number of columns and rows, and a message is printed to indicate that the voltmeter is monitoring the battery voltage.
+4. The `loop()` function continuously performs the following steps:
+    * Reads the analog value from the voltage divider circuit using the `analogRead()` function.
+    * Converts the analog value to voltage using the formula: `temp = (analog_value * 5.0) / 1024.0`.
+    * Calculates the battery voltage using the formula: `input_voltage = temp / (r2 / (r1 + r2))`.
+    * Checks if the input voltage is less than 0.1V, and if so, sets it to 0.0V.
+    * Prints the voltage value to the serial monitor.
+    * Updates the LCD display with the voltage value.
+    * Adds a delay of 100 milliseconds to prevent rapid flickering of the display.
+
+Usage
+-----
+
+1. Connect the Arduino board to a power source.
+2. The LCD display will show the battery voltage in real-time.
+3. You can also monitor the voltage values through the serial monitor in the Arduino IDE.
+
+License
+-------
+
+This project is licensed under the [MIT License](LICENSE).
+
